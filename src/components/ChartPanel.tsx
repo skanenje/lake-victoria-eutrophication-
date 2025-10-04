@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Plot from 'react-plotly.js';
+import dynamic from 'next/dynamic';
 import { TimeDataPoint } from '@/lib/types';
+
+const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 interface ChartPanelProps {
   data: TimeDataPoint[];

@@ -24,7 +24,7 @@ export default function NASADataPanel({ data, isLoading }: NASADataPanelProps) {
     );
   }
 
-  if (!data) {
+  if (!data || !data.metrics) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6">
         <div className="text-center text-gray-500">

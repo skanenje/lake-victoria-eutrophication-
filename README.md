@@ -4,7 +4,7 @@ A Next.js application for visualizing 25 years of environmental change in Lake V
 
 ## Features
 
-- Interactive map visualization with Mapbox GL JS
+- Interactive map visualization with Leaflet.js
 - Time-based animation of NDVI and LST data
 - Environmental trend charts with Plotly.js
 - Terra satellite instrument information
@@ -16,7 +16,7 @@ A Next.js application for visualizing 25 years of environmental change in Lake V
 - **Framework**: Next.js 14 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Maps**: Mapbox GL JS
+- **Maps**: Leaflet.js
 - **Charts**: Plotly.js
 - **Deployment**: Vercel
 
@@ -24,18 +24,14 @@ A Next.js application for visualizing 25 years of environmental change in Lake V
 
 - Node.js 18+ 
 - npm 8+
-- Mapbox account and access token
 
 ## Environment Variables
 
 Create a `.env.local` file in the root directory:
 
 ```env
-NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token_here
 BACKEND_URL=http://localhost:3001
 ```
-
-Get your Mapbox token from [https://account.mapbox.com/access-tokens/](https://account.mapbox.com/access-tokens/)
 
 ### Backend Environment Variables
 
@@ -125,8 +121,7 @@ Get NASA Earthdata credentials from [https://urs.earthdata.nasa.gov/](https://ur
    vercel
    ```
 
-4. Set environment variables in Vercel dashboard:
-   - `NEXT_PUBLIC_MAPBOX_TOKEN`: Your Mapbox token
+4. No additional environment variables needed for maps
 
 ### Option 2: Deploy via GitHub Integration
 
@@ -138,7 +133,7 @@ Get NASA Earthdata credentials from [https://urs.earthdata.nasa.gov/](https://ur
 ### Environment Variables for Production
 
 In your Vercel dashboard, add:
-- `NEXT_PUBLIC_MAPBOX_TOKEN`: Your Mapbox access token
+- No additional environment variables needed for maps
 
 ## Project Structure
 

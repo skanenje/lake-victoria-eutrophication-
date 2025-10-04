@@ -2,7 +2,7 @@
 const nextConfig = {
   // Remove experimental appDir as it's now stable in Next.js 14
   images: {
-    domains: ['api.mapbox.com'],
+    domains: ['tile.openstreetmap.org', 'server.arcgisonline.com'],
   },
   // Production optimizations
   compress: true,
@@ -10,10 +10,7 @@ const nextConfig = {
   generateEtags: false,
   // Static file optimization
   trailingSlash: false,
-  // Environment variables validation
-  env: {
-    NEXT_PUBLIC_MAPBOX_TOKEN: process.env.NEXT_PUBLIC_MAPBOX_TOKEN,
-  },
+
   // Headers for security and performance
   async headers() {
     return [

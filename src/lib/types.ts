@@ -2,16 +2,15 @@ export interface Region {
   slug: string;
   name: string;
   description: string;
-  coordinates: {
-    lat: number;
-    lng: number;
+  boundingBox: number[];
+  center: number[];
+  zoom: number;
+  datasets: {
+    ndvi: string;
+    lst: string;
+    annotations: string;
   };
-  bounds: {
-    north: number;
-    south: number;
-    east: number;
-    west: number;
-  };
+  chartData: string;
   instruments: string[];
   timeRange: {
     start: string;

@@ -66,10 +66,8 @@ export const ANIMATION_CONFIG = {
 };
 
 export const MAP_CONFIG = {
-  mapboxToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '',
-  defaultStyle: 'mapbox://styles/mapbox/satellite-v9',
   maxZoom: 18,
   minZoom: 6,
-  // Fallback style if Mapbox token is not available
-  fallbackStyle: 'mapbox://styles/mapbox/streets-v12'
+  defaultTileLayer: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  satelliteTileLayer: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
 };
