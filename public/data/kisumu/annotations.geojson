@@ -1,0 +1,80 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "urban-expansion-2005",
+        "type": "event",
+        "title": "Major Urban Expansion",
+        "description": "Significant urban development begins in Kisumu, leading to increased impervious surfaces and reduced vegetation cover.",
+        "date": "2005-01-01",
+        "impact": "negative"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [34.4, 0.15]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "climate-change-2010",
+        "type": "milestone",
+        "title": "Climate Change Effects",
+        "description": "Rising temperatures and changing precipitation patterns begin to significantly impact local ecosystems and agriculture.",
+        "date": "2010-01-01",
+        "impact": "negative"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [34.2, 0.1]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "conservation-efforts-2015",
+        "type": "event",
+        "title": "Conservation Initiatives",
+        "description": "Local and international conservation efforts begin to address environmental degradation around Lake Victoria.",
+        "date": "2015-01-01",
+        "impact": "positive"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [34.6, 0.2]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "agricultural-adaptation-2020",
+        "type": "event",
+        "title": "Agricultural Adaptation",
+        "description": "Farmers begin adopting climate-smart agricultural practices to cope with changing environmental conditions.",
+        "date": "2020-01-01",
+        "impact": "positive"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [34.1, 0.05]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "water-quality-crisis-2025",
+        "type": "impact",
+        "title": "Water Quality Crisis",
+        "description": "Lake Victoria faces significant water quality challenges affecting local communities and ecosystems.",
+        "date": "2025-01-01",
+        "impact": "negative"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [34.3, 0.0]
+      }
+    }
+  ]
+}

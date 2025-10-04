@@ -1,0 +1,31 @@
+[
+  {
+    "name": "Kisumu",
+    "slug": "kisumu",
+    "description": "Kisumu, Kenya - A major port city on Lake Victoria's northeastern shore",
+    "boundingBox": [33.9, -0.2, 34.9, 0.5],
+    "center": [34.4, 0.15],
+    "zoom": 10,
+    "datasets": {
+      "ndvi": "/data/kisumu/ndvi_tiles.json",
+      "lst": "/data/kisumu/lst_tiles.json",
+      "annotations": "/data/kisumu/annotations.geojson"
+    },
+    "chartData": "/data/kisumu/trends.json",
+    "timeRange": {
+      "start": "2000-01-01",
+      "end": "2025-01-01"
+    },
+    "instruments": ["MODIS", "ASTER", "MISR", "CERES", "MOPITT"],
+    "story": {
+      "title": "Lake Victoria's Changing Face",
+      "description": "Explore 25 years of environmental change in Kisumu using Terra satellite data",
+      "impacts": [
+        "Urban expansion and land use changes",
+        "Water quality and ecosystem health",
+        "Agricultural productivity and food security",
+        "Climate change effects on local communities"
+      ]
+    }
+  }
+]

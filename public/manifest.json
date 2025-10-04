@@ -1,0 +1,26 @@
+{
+  "name": "Lake Victoria MVP",
+  "short_name": "Lake Victoria MVP",
+  "description": "Terra Satellite Data Visualization",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0B3D91",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["education", "science", "environment"],
+  "lang": "en"
+}
+

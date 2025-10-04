@@ -1,0 +1,51 @@
+{
+  "type": "raster",
+  "name": "NDVI - Normalized Difference Vegetation Index",
+  "description": "Vegetation health and density measurements from Terra MODIS",
+  "source": "Terra MODIS",
+  "resolution": "250m",
+  "timeRange": "2000-2025",
+  "tiles": {
+    "2000": {
+      "url": "https://example.com/tiles/ndvi_2000/{z}/{x}/{y}.png",
+      "bounds": [33.9, -0.2, 34.9, 0.5],
+      "minZoom": 8,
+      "maxZoom": 16
+    },
+    "2005": {
+      "url": "https://example.com/tiles/ndvi_2005/{z}/{x}/{y}.png",
+      "bounds": [33.9, -0.2, 34.9, 0.5],
+      "minZoom": 8,
+      "maxZoom": 16
+    },
+    "2010": {
+      "url": "https://example.com/tiles/ndvi_2010/{z}/{x}/{y}.png",
+      "bounds": [33.9, -0.2, 34.9, 0.5],
+      "minZoom": 8,
+      "maxZoom": 16
+    },
+    "2015": {
+      "url": "https://example.com/tiles/ndvi_2015/{z}/{x}/{y}.png",
+      "bounds": [33.9, -0.2, 34.9, 0.5],
+      "minZoom": 8,
+      "maxZoom": 16
+    },
+    "2020": {
+      "url": "https://example.com/tiles/ndvi_2020/{z}/{x}/{y}.png",
+      "bounds": [33.9, -0.2, 34.9, 0.5],
+      "minZoom": 8,
+      "maxZoom": 16
+    },
+    "2025": {
+      "url": "https://example.com/tiles/ndvi_2025/{z}/{x}/{y}.png",
+      "bounds": [33.9, -0.2, 34.9, 0.5],
+      "minZoom": 8,
+      "maxZoom": 16
+    }
+  },
+  "colorScale": {
+    "min": -0.2,
+    "max": 1.0,
+    "colors": ["#8B0000", "#FF0000", "#FFFF00", "#00FF00", "#006400"]
+  }
+}
