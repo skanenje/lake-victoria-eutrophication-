@@ -8,7 +8,8 @@ import TimeSlider from '@/components/TimeSlider';
 import ChartPanel from '@/components/ChartPanel';
 import TerraInstruments from '@/components/TerraInstruments';
 import DataLayersOverlay from '@/components/DataLayersOverlay';
-import { Region, TimeDataPoint, Annotation } from '@/lib/types';
+import NASADataPanel from '@/components/NASADataPanel';
+import { Region, TimeDataPoint, Annotation, NASAData } from '@/lib/types';
 import regionsData from '@/config/regions.json';
 
 /**
@@ -28,6 +29,8 @@ export default function KisumuDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [animationSpeed, setAnimationSpeed] = useState(1);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [nasaData, setNasaData] = useState<NASAData | null>(null);
+  const [nasaDataLoading, setNasaDataLoading] = useState(true);
 
   // Load region data
   useEffect(() => {
@@ -88,6 +91,28 @@ export default function KisumuDashboard() {
     };
 
     loadAnnotations();
+  }, []);
+
+  // Load NASA data
+  useEffect(() => {
+    const loadNASAData = async () => {
+      try {
+        setNasaDataLoading(true);
+        const response = await fetch('/api/nasa-data');
+        if (!response.ok) {
+          throw new Error(`Failed to load NASA data: ${response.status}`);
+        }
+        const data = await response.json();
+        setNasaData(data);
+      } catch (error) {
+        console.error('Failed to load NASA data:', error);
+        setNasaData(null);
+      } finally {
+        setNasaDataLoading(false);
+      }
+    };
+
+    loadNASAData();
   }, []);
 
   // Set loading state
@@ -233,6 +258,11 @@ export default function KisumuDashboard() {
               ))}
             </div>
           </div>
+        </section>
+
+        {/* NASA Data Panel */}
+        <section className="mb-8">
+          <NASADataPanel data={nasaData} isLoading={nasaDataLoading} />
         </section>
 
         {/* Dashboard Grid */}

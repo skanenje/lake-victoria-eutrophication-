@@ -1,25 +1,22 @@
-/**
- * Type definitions for the Lake Victoria MVP project
- */
-
 export interface Region {
-  name: string;
   slug: string;
+  name: string;
   description: string;
-  boundingBox: [number, number, number, number]; // [west, south, east, north]
-  center: [number, number]; // [longitude, latitude]
-  zoom: number;
-  datasets: {
-    ndvi: string;
-    lst: string;
-    annotations: string;
+  coordinates: {
+    lat: number;
+    lng: number;
   };
-  chartData: string;
+  bounds: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+  };
+  instruments: string[];
   timeRange: {
     start: string;
     end: string;
   };
-  instruments: string[];
   story: {
     title: string;
     description: string;
@@ -28,45 +25,100 @@ export interface Region {
 }
 
 export interface TimeDataPoint {
+  year: number;
+  month?: number;
   date: string;
   ndvi: number;
   lst: number;
-  year: number;
-  month: number;
+  precipitation?: number;
+  temperature?: number;
 }
 
 export interface Annotation {
   id: string;
-  type: 'event' | 'milestone' | 'impact';
+  type: 'event' | 'observation' | 'milestone';
   title: string;
   description: string;
   date: string;
   coordinates: [number, number];
-  impact: 'positive' | 'negative' | 'neutral';
+  impact: 'low' | 'medium' | 'high';
 }
 
-export interface MapLayer {
-  id: string;
-  name: string;
-  type: 'raster' | 'vector';
-  url: string;
-  visible: boolean;
-  opacity: number;
+// NASA Backend Data Types
+export interface NASAMetrics {
+  chlorophyll: {
+    current: number;
+    trend: string;
+    status: 'normal' | 'warning' | 'critical';
+    unit: string;
+    threshold: number;
+  };
+  temperature: {
+    current: number;
+    trend: string;
+    status: 'normal' | 'warning' | 'critical';
+    unit: string;
+    threshold: number;
+  };
+  oxygen: {
+    current: number;
+    trend: string;
+    status: 'normal' | 'warning' | 'critical';
+    unit: string;
+    threshold: number;
+  };
+  algalBloom: {
+    current: number;
+    trend: string;
+    status: 'normal' | 'warning' | 'critical';
+    unit: string;
+    threshold: number;
+  };
 }
 
-export interface ChartConfig {
-  type: 'line' | 'scatter' | 'bar';
-  xAxis: string;
-  yAxis: string;
-  title: string;
-  colors: string[];
+export interface NASATimeSeriesPoint {
+  date: string;
+  year: number;
+  chlorophyll: number;
+  temperature: number;
+  dissolvedOxygen: number;
+  algalBloom: number;
+  riskScore: number;
 }
 
-export interface TerraInstrument {
-  name: string;
-  fullName: string;
-  description: string;
-  dataTypes: string[];
-  resolution: string;
-  swath: string;
+export interface NASAData {
+  metrics: NASAMetrics;
+  timeSeries: NASATimeSeriesPoint[];
+  monthlyData: Array<{
+    month: string;
+    monthNum: number;
+    chlorophyll: number;
+    temperature: number;
+    dissolvedOxygen: number;
+    rainfall: number;
+  }>;
+  location: {
+    lat: number;
+    lon: number;
+    minLat: number;
+    maxLat: number;
+    minLon: number;
+    maxLon: number;
+  };
+  assessment: {
+    year: number;
+    chlorophyll: number;
+    temperature: number;
+    riskLevel: string;
+    trend: string;
+    affectedPopulation: string;
+  };
+  impact: {
+    environmental: string[];
+    human: string[];
+    economic: string[];
+  };
+  recommendations: string[];
+  lastUpdate: string;
+  dataSource: string;
 }
