@@ -9,6 +9,7 @@ import ChartPanel from '@/components/ChartPanel';
 import TerraInstruments from '@/components/TerraInstruments';
 import DataLayersOverlay from '@/components/DataLayersOverlay';
 import NASADataPanel from '@/components/NASADataPanel';
+import ModisImageryTimeseries from '@/components/ModisImageryTimeseries';
 import { Region, TimeDataPoint, Annotation, NASAData } from '@/lib/types';
 import regionsData from '@/config/regions.json';
 
@@ -42,20 +43,43 @@ export default function KisumuDashboard() {
     }
   }, [router]);
 
-  // Load chart data
+  // Load chart data from NASA backend
   useEffect(() => {
     const loadChartData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('/data/kisumu/trends.json');
-        if (!response.ok) {
-          throw new Error(`Failed to load chart data: ${response.status}`);
+        // Try NASA backend data first
+        const response = await fetch('/api/nasa-data');
+        if (response.ok) {
+          const nasaData = await response.json();
+          if (nasaData.timeSeries) {
+            // Convert NASA data to chart format
+            const chartData = nasaData.timeSeries.map((item: any) => ({
+              date: item.date,
+              year: item.year,
+              ndvi: (item.chlorophyll / 100) + 0.3, // Convert chlorophyll to NDVI-like scale
+              lst: item.temperature + 273.15, // Convert to Kelvin
+              chlorophyll: item.chlorophyll,
+              temperature: item.temperature,
+              dissolvedOxygen: item.dissolvedOxygen,
+              algalBloom: item.algalBloom,
+              riskScore: item.riskScore
+            }));
+            setChartData(chartData);
+            return;
+          }
         }
-        const data = await response.json();
-        setChartData(data);
+        
+        // Fallback to static data
+        const fallbackResponse = await fetch('/data/kisumu/trends.json');
+        if (fallbackResponse.ok) {
+          const data = await fallbackResponse.json();
+          setChartData(data);
+        } else {
+          setChartData([]);
+        }
       } catch (error) {
         console.error('Failed to load chart data:', error);
-        // Set empty data to prevent infinite loading
         setChartData([]);
       } finally {
         setIsLoading(false);
@@ -227,8 +251,13 @@ export default function KisumuDashboard() {
             
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <div className="text-sm font-medium text-gray-900">{region.name}</div>
-                <div className="text-xs text-gray-600">Current Year: {selectedYear}</div>
+                <div className="text-sm font-medium text-gray-900">{region.name} - Terra Mission</div>
+                <div className="text-xs text-gray-600">Year: {selectedYear} • 25 Years of Data (2000-2024)</div>
+                {nasaData?.assessment && (
+                  <div className="text-xs font-semibold text-red-600">
+                    Risk: {nasaData.assessment.riskLevel}
+                  </div>
+                )}
               </div>
               <Link href="/" className="btn-secondary text-sm">
                 Back to Home
@@ -240,29 +269,18 @@ export default function KisumuDashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Story Section */}
+        {/* MODIS Satellite Imagery Timeseries */}
         <section className="mb-8">
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {region.story.title}
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              🛰️ MODIS Terra Satellite Imagery - 25 Years of Change
             </h2>
-            <p className="text-gray-600 mb-4">
-              {region.story.description}
+            <p className="text-gray-600 mb-6">
+              Annual May 1st satellite images (2000-2024) showing eutrophication progression in Lake Victoria
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {region.story.impacts.map((impact, index) => (
-                <div key={index} className="bg-blue-50 p-3 rounded-lg">
-                  <div className="text-sm font-medium text-blue-800">{impact}</div>
-                </div>
-              ))}
-            </div>
+            <ModisImageryTimeseries selectedYear={selectedYear} onYearChange={handleYearChange} />
           </div>
-        </section>
-
-        {/* NASA Data Panel */}
-        <section className="mb-8">
-          <NASADataPanel data={nasaData} isLoading={nasaDataLoading} />
         </section>
 
         {/* Dashboard Grid */}
@@ -397,50 +415,120 @@ export default function KisumuDashboard() {
           />
         </section>
 
-        {/* Data Summary */}
+        {/* Terra Satellite Data Summary */}
         <section className="mt-8">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Data Summary for {selectedYear}
+              Terra Satellite Data Summary for {selectedYear}
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
-                  {(() => {
-                    const yearData = chartData.filter(d => d.year === selectedYear);
-                    if (yearData.length > 0) {
-                      const avgNDVI = yearData.reduce((sum, d) => sum + d.ndvi, 0) / yearData.length;
-                      return avgNDVI.toFixed(3);
-                    }
-                    return 'N/A';
-                  })()}
-                </div>
-                <div className="text-sm text-gray-600">Average NDVI</div>
-              </div>
-              
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-red-600">
                   {(() => {
-                    const yearData = chartData.filter(d => d.year === selectedYear);
-                    if (yearData.length > 0) {
-                      const avgLST = yearData.reduce((sum, d) => sum + d.lst, 0) / yearData.length;
-                      return avgLST.toFixed(1);
-                    }
-                    return 'N/A';
+                    const yearData = chartData.find(d => d.year === selectedYear);
+                    return yearData?.chlorophyll?.toFixed(1) || 'N/A';
                   })()}
                 </div>
-                <div className="text-sm text-gray-600">Average LST (°K)</div>
+                <div className="text-sm text-gray-600">Chlorophyll-a (μg/L)</div>
+                <div className="text-xs text-gray-500 mt-1">MODIS Terra</div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-2xl font-bold text-orange-600">
+                  {(() => {
+                    const yearData = chartData.find(d => d.year === selectedYear);
+                    return yearData?.temperature?.toFixed(1) || 'N/A';
+                  })()}
+                </div>
+                <div className="text-sm text-gray-600">Water Temp (°C)</div>
+                <div className="text-xs text-gray-500 mt-1">ASTER</div>
               </div>
               
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">
-                  {selectedInstruments.length}
+                  {(() => {
+                    const yearData = chartData.find(d => d.year === selectedYear);
+                    return yearData?.dissolvedOxygen?.toFixed(1) || 'N/A';
+                  })()}
                 </div>
-                <div className="text-sm text-gray-600">Active Instruments</div>
+                <div className="text-sm text-gray-600">Dissolved O₂ (mg/L)</div>
+                <div className="text-xs text-gray-500 mt-1">Derived</div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  {(() => {
+                    const yearData = chartData.find(d => d.year === selectedYear);
+                    return yearData?.riskScore || 'N/A';
+                  })()}
+                </div>
+                <div className="text-sm text-gray-600">Risk Score (1-10)</div>
+                <div className="text-xs text-gray-500 mt-1">Multi-instrument</div>
               </div>
             </div>
+            
+            {nasaData?.impact && (
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-red-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-red-800 mb-2">Environmental Impact</h4>
+                  <ul className="text-sm text-red-700 space-y-1">
+                    {nasaData.impact.environmental?.slice(0, 2).map((impact: string, index: number) => (
+                      <li key={index} className="flex items-start space-x-1">
+                        <span className="text-red-500 mt-1">•</span>
+                        <span>{impact}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-blue-800 mb-2">Human Impact</h4>
+                  <ul className="text-sm text-blue-700 space-y-1">
+                    {nasaData.impact.human?.slice(0, 2).map((impact: string, index: number) => (
+                      <li key={index} className="flex items-start space-x-1">
+                        <span className="text-blue-500 mt-1">•</span>
+                        <span>{impact}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-green-800 mb-2">Economic Impact</h4>
+                  <ul className="text-sm text-green-700 space-y-1">
+                    {nasaData.impact.economic?.slice(0, 2).map((impact: string, index: number) => (
+                      <li key={index} className="flex items-start space-x-1">
+                        <span className="text-green-500 mt-1">•</span>
+                        <span>{impact}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         </section>
+        
+        {/* Recommendations Section */}
+        {nasaData?.recommendations && (
+          <section className="mt-8">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Terra Data-Driven Recommendations
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {nasaData.recommendations.map((recommendation: string, index: number) => (
+                  <div key={index} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                    <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mt-0.5">
+                      {index + 1}
+                    </div>
+                    <div className="text-sm text-blue-800">{recommendation}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

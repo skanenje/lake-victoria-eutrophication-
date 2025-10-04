@@ -28,7 +28,9 @@ export default function NASADataPanel({ data, isLoading }: NASADataPanelProps) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6">
         <div className="text-center text-gray-500">
-          <p>NASA data not available</p>
+          <div className="text-4xl mb-2">🛰️</div>
+          <p className="font-medium">NASA Terra satellite data not available</p>
+          <p className="text-sm mt-1">Using fallback data from static sources</p>
         </div>
       </div>
     );
@@ -45,131 +47,170 @@ export default function NASADataPanel({ data, isLoading }: NASADataPanelProps) {
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold text-gray-900">NASA Terra Data Analysis</h3>
-        <div className="text-sm text-gray-500">
-          Last updated: {new Date(data.lastUpdate).toLocaleDateString()}
+        <div>
+          <h3 className="text-xl font-bold text-gray-900">🛰️ NASA Terra Mission Data</h3>
+          <p className="text-sm text-gray-600">25 Years of Satellite Monitoring (2000-2024)</p>
+        </div>
+        <div className="text-right">
+          <div className="text-sm text-gray-500">
+            Last updated: {new Date(data.lastUpdate).toLocaleDateString()}
+          </div>
+          <div className="text-xs text-gray-400">
+            Source: {data.dataSource}
+          </div>
         </div>
       </div>
 
-      {/* Current Metrics */}
+      {/* Terra Instruments Data */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="text-center p-4 rounded-lg border">
+        <div className="text-center p-4 rounded-lg border border-red-200 bg-red-50">
           <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(data.metrics.chlorophyll.status)}`}>
             {data.metrics.chlorophyll.status.toUpperCase()}
           </div>
-          <div className="text-2xl font-bold text-gray-900 mt-2">
+          <div className="text-2xl font-bold text-red-800 mt-2">
             {data.metrics.chlorophyll.current}
           </div>
-          <div className="text-sm text-gray-600">
-            Chlorophyll ({data.metrics.chlorophyll.unit})
+          <div className="text-sm text-red-700">
+            Chlorophyll-a ({data.metrics.chlorophyll.unit})
           </div>
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs text-red-600 mt-1">
             {data.metrics.chlorophyll.trend}
+          </div>
+          <div className="text-xs text-gray-500 mt-1 font-medium">
+            📡 MODIS Terra
           </div>
         </div>
 
-        <div className="text-center p-4 rounded-lg border">
+        <div className="text-center p-4 rounded-lg border border-orange-200 bg-orange-50">
           <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(data.metrics.temperature.status)}`}>
             {data.metrics.temperature.status.toUpperCase()}
           </div>
-          <div className="text-2xl font-bold text-gray-900 mt-2">
+          <div className="text-2xl font-bold text-orange-800 mt-2">
             {data.metrics.temperature.current}
           </div>
-          <div className="text-sm text-gray-600">
-            Temperature ({data.metrics.temperature.unit})
+          <div className="text-sm text-orange-700">
+            Water Temperature ({data.metrics.temperature.unit})
           </div>
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs text-orange-600 mt-1">
             {data.metrics.temperature.trend}
+          </div>
+          <div className="text-xs text-gray-500 mt-1 font-medium">
+            🌡️ ASTER
           </div>
         </div>
 
-        <div className="text-center p-4 rounded-lg border">
+        <div className="text-center p-4 rounded-lg border border-blue-200 bg-blue-50">
           <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(data.metrics.oxygen.status)}`}>
             {data.metrics.oxygen.status.toUpperCase()}
           </div>
-          <div className="text-2xl font-bold text-gray-900 mt-2">
+          <div className="text-2xl font-bold text-blue-800 mt-2">
             {data.metrics.oxygen.current}
           </div>
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-blue-700">
             Dissolved O₂ ({data.metrics.oxygen.unit})
           </div>
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs text-blue-600 mt-1">
             {data.metrics.oxygen.trend}
+          </div>
+          <div className="text-xs text-gray-500 mt-1 font-medium">
+            🧮 Multi-instrument
           </div>
         </div>
 
-        <div className="text-center p-4 rounded-lg border">
+        <div className="text-center p-4 rounded-lg border border-green-200 bg-green-50">
           <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(data.metrics.algalBloom.status)}`}>
             {data.metrics.algalBloom.status.toUpperCase()}
           </div>
-          <div className="text-2xl font-bold text-gray-900 mt-2">
+          <div className="text-2xl font-bold text-green-800 mt-2">
             {data.metrics.algalBloom.current}
           </div>
-          <div className="text-sm text-gray-600">
-            Algal Bloom ({data.metrics.algalBloom.unit})
+          <div className="text-sm text-green-700">
+            Algal Bloom Area ({data.metrics.algalBloom.unit})
           </div>
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs text-green-600 mt-1">
             {data.metrics.algalBloom.trend}
+          </div>
+          <div className="text-xs text-gray-500 mt-1 font-medium">
+            🔬 MISR + MODIS
           </div>
         </div>
       </div>
 
-      {/* Assessment */}
-      <div className="bg-gray-50 rounded-lg p-4 mb-6">
-        <h4 className="font-semibold text-gray-900 mb-2">Current Assessment</h4>
+      {/* Terra Mission Assessment */}
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-6 border border-blue-200">
+        <div className="flex items-center mb-3">
+          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+            <span className="text-white text-sm font-bold">T</span>
+          </div>
+          <h4 className="font-semibold text-gray-900">Terra Mission Assessment (25 Years)</h4>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div>
-            <span className="text-gray-600">Risk Level:</span>
-            <span className={`ml-2 px-2 py-1 rounded text-xs font-medium ${
-              data.assessment.riskLevel === 'CRITICAL' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+          <div className="flex items-center">
+            <span className="text-gray-600">🚨 Risk Level:</span>
+            <span className={`ml-2 px-3 py-1 rounded-full text-xs font-bold ${
+              data.assessment.riskLevel === 'CRITICAL' ? 'bg-red-500 text-white animate-pulse' : 
+              data.assessment.riskLevel === 'HIGH' ? 'bg-orange-500 text-white' : 'bg-yellow-500 text-white'
             }`}>
               {data.assessment.riskLevel}
             </span>
           </div>
-          <div>
-            <span className="text-gray-600">Trend:</span>
-            <span className="ml-2 font-medium">{data.assessment.trend}</span>
+          <div className="flex items-center">
+            <span className="text-gray-600">📈 Trend:</span>
+            <span className={`ml-2 font-bold ${
+              data.assessment.trend === 'DETERIORATING' ? 'text-red-600' : 'text-green-600'
+            }`}>
+              {data.assessment.trend}
+            </span>
           </div>
-          <div>
-            <span className="text-gray-600">Affected Population:</span>
-            <span className="ml-2 font-medium">{data.assessment.affectedPopulation}</span>
+          <div className="flex items-center">
+            <span className="text-gray-600">👥 Affected:</span>
+            <span className="ml-2 font-bold text-blue-800">{data.assessment.affectedPopulation}</span>
           </div>
         </div>
       </div>
 
-      {/* Impact Summary */}
+      {/* Terra Data Impact Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <h5 className="font-medium text-gray-900 mb-2">Environmental Impact</h5>
-          <ul className="text-sm text-gray-600 space-y-1">
+        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+          <div className="flex items-center mb-2">
+            <span className="text-red-600 text-lg mr-2">🌍</span>
+            <h5 className="font-semibold text-red-800">Environmental Impact</h5>
+          </div>
+          <ul className="text-sm text-red-700 space-y-2">
             {data.impact.environmental.slice(0, 2).map((impact, index) => (
               <li key={index} className="flex items-start">
-                <span className="text-red-500 mr-2">•</span>
-                {impact}
+                <span className="text-red-500 mr-2 mt-1">▸</span>
+                <span>{impact}</span>
               </li>
             ))}
           </ul>
         </div>
         
-        <div>
-          <h5 className="font-medium text-gray-900 mb-2">Human Impact</h5>
-          <ul className="text-sm text-gray-600 space-y-1">
+        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+          <div className="flex items-center mb-2">
+            <span className="text-orange-600 text-lg mr-2">👥</span>
+            <h5 className="font-semibold text-orange-800">Human Impact</h5>
+          </div>
+          <ul className="text-sm text-orange-700 space-y-2">
             {data.impact.human.slice(0, 2).map((impact, index) => (
               <li key={index} className="flex items-start">
-                <span className="text-orange-500 mr-2">•</span>
-                {impact}
+                <span className="text-orange-500 mr-2 mt-1">▸</span>
+                <span>{impact}</span>
               </li>
             ))}
           </ul>
         </div>
         
-        <div>
-          <h5 className="font-medium text-gray-900 mb-2">Economic Impact</h5>
-          <ul className="text-sm text-gray-600 space-y-1">
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <div className="flex items-center mb-2">
+            <span className="text-blue-600 text-lg mr-2">💰</span>
+            <h5 className="font-semibold text-blue-800">Economic Impact</h5>
+          </div>
+          <ul className="text-sm text-blue-700 space-y-2">
             {data.impact.economic.slice(0, 2).map((impact, index) => (
               <li key={index} className="flex items-start">
-                <span className="text-blue-500 mr-2">•</span>
-                {impact}
+                <span className="text-blue-500 mr-2 mt-1">▸</span>
+                <span>{impact}</span>
               </li>
             ))}
           </ul>
