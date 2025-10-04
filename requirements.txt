@@ -1,0 +1,9 @@
+geemap
+earthengine-api
+rasterio
+numpy
+pandas
+matplotlib
+seaborn
+moviepy
+imageio

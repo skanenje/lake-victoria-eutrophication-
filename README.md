@@ -1,157 +1,54 @@
-# Lake Victoria MVP - Terra Satellite Data Visualization
+# Lake Victoria Eutrophication — GEE → Animation Pipeline
 
-A Next.js application for visualizing 25 years of environmental change in Lake Victoria using NASA Terra satellite data.
+This repository holds code and guidance to run the full pipeline described in the project guide: acquire MODIS chlorophyll-a from Google Earth Engine (GEE), analyze trends and hotspots, export products, and create a final animation/video highlighting eutrophication in Lake Victoria (Winam Gulf focus).
 
-## Features
+Project layout (added files):
 
-- Interactive map visualization with Mapbox GL JS
-- Time-based animation of NDVI and LST data
-- Environmental trend charts with Plotly.js
-- Terra satellite instrument information
-- Responsive design with Tailwind CSS
-- PWA support with web app manifest
+- `scripts/gee/lake_victoria_gee_chla.js` — Google Earth Engine (JS) script to create monthly composites, compute trends and bloom frequency, and export CSVs and rasters to Google Drive. Paste into the GEE Code Editor and run exports via the Tasks panel.
 
-## Tech Stack
+- `scripts/python/analysis_and_animation.py` — Python script to load the GEE CSV (or create sample data), run time-series analysis, and create a trend plot saved to `outputs/figures`.
 
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Maps**: Mapbox GL JS
-- **Charts**: Plotly.js
-- **Deployment**: Vercel
+- `scripts/python/video_production.py` — Simple MoviePy-based helper to stitch PNG frames from `spatial_frames/` into an MP4 video in `output/`.
 
-## Prerequisites
+- `notebooks/Lake_Victoria_Eutrophication.ipynb` — Notebook scaffold showing how to run the Python analysis using the scripts.
 
-- Node.js 18+ 
-- npm 8+
-- Mapbox account and access token
+- `requirements.txt` — Suggested Python dependencies for local processing, geemap for GEE-Python bridge, plus rasterio and moviepy for visualization/animation.
 
-## Environment Variables
+Quick start
 
-Create a `.env.local` file in the root directory:
+1. Run the GEE script:
+   - Open `scripts/gee/lake_victoria_gee_chla.js` in the Earth Engine Code Editor (code.earthengine.google.com).
+   - Update `CONFIG.exportFolder` if you want a custom Google Drive folder.
+   - Run the script and in the Tasks tab start the exports. Download the CSV `LakeVictoria_Monthly_Chla_TimeSeries.csv` and any raster frames you exported into the repo root or `scripts/python/`.
 
-```env
-NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token_here
+2. Local setup (Linux / zsh):
+   - Create and activate a Python environment (recommended):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-Get your Mapbox token from [https://account.mapbox.com/access-tokens/](https://account.mapbox.com/access-tokens/)
+3. Run analysis and produce a trend plot:
 
-## Development
-
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-2. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-3. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint errors
-- `npm run type-check` - Run TypeScript type checking
-- `npm run clean` - Clean build artifacts
-
-## Deployment to Vercel
-
-### Option 1: Deploy via Vercel CLI
-
-1. Install Vercel CLI:
-   ```bash
-   npm i -g vercel
-   ```
-
-2. Login to Vercel:
-   ```bash
-   vercel login
-   ```
-
-3. Deploy:
-   ```bash
-   vercel
-   ```
-
-4. Set environment variables in Vercel dashboard:
-   - `NEXT_PUBLIC_MAPBOX_TOKEN`: Your Mapbox token
-
-### Option 2: Deploy via GitHub Integration
-
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Set environment variables in Vercel dashboard
-4. Deploy automatically on push
-
-### Environment Variables for Production
-
-In your Vercel dashboard, add:
-- `NEXT_PUBLIC_MAPBOX_TOKEN`: Your Mapbox access token
-
-## Project Structure
-
-```
-src/
-├── app/                 # Next.js App Router pages
-│   ├── globals.css     # Global styles
-│   ├── layout.tsx      # Root layout
-│   ├── page.tsx        # Home page
-│   └── kisumu/         # Kisumu region page
-├── components/          # React components
-│   ├── MapContainer.tsx
-│   ├── TimeSlider.tsx
-│   ├── ChartPanel.tsx
-│   ├── TerraInstruments.tsx
-│   └── DataLayersOverlay.tsx
-├── lib/                # Utilities and configuration
-│   ├── constants.ts
-│   ├── types.ts
-│   └── env.ts
-└── config/             # Configuration files
-    └── regions.json
+```bash
+python scripts/python/analysis_and_animation.py
 ```
 
-## Data Sources
+4. Create spatial frames (place GeoTIFFs into `frames/` or `spatial_frames/`), then stitch into a video:
 
-The application uses static JSON data files located in `public/data/kisumu/`:
-- `trends.json` - Time series data for charts
-- `annotations.geojson` - Map annotations
-- `ndvi_tiles.json` - NDVI tile configuration
-- `lst_tiles.json` - LST tile configuration
+```bash
+python scripts/python/video_production.py
+```
 
-## Performance Optimizations
+Notes & next steps
 
-- Static generation for better performance
-- Image optimization with Next.js Image component
-- Code splitting and lazy loading
-- Compression and caching headers
-- PWA manifest for offline support
+- The notebook `notebooks/Lake_Victoria_Eutrophication.ipynb` demonstrates running the analysis inside Jupyter/Colab.
+- For production animations, export 30–60 GeoTIFF frames from GEE (e.g., every 6 months or quarterly), place them into `spatial_frames/` and run `video_production.py`.
+- Consider editing `scripts/python/video_composer.py` (or enhancing `video_production.py`) to add overlays, captions, and audio.
 
-## Browser Support
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
-
-## License
-
-This project is built for educational and research purposes as part of the NASA SAC program.
-
-## Support
-
-For issues and questions, please create an issue in the GitHub repository.
+If you'd like, I can:
+- wire up a small test that validates the CSV schema and plots a quick sanity-check,
+- extend the notebook to generate spatial sample frames automatically,
+- or create a Makefile / task runner to automate environment setup and runs.
